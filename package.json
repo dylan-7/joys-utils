@@ -1,0 +1,50 @@
+{
+  "name": "joys-utils",
+  "description": "utils",
+  "homepage": "https://github.com/dylan-7/joys-utils",
+  "version": "1.0.3",
+  "author": "dylan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylan-7/joys-utils.git"
+  },
+  "main": "lib/index.js",
+  "contributors": [],
+  "keywords": [
+    "utils",
+    "joys-utils"
+  ],
+  "engines": {
+    "node": ">=0.6"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "types"
+  ],
+  "types": "./types/index.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/moment-timezone": "^0.5.6",
+    "moment-timezone": "^0.5.16",
+    "rimraf": "^2.6.2",
+    "typescript": "^2.9.1"
+  },
+  "scripts": {
+    "prepublish": "yarn run build",
+    "pretest": "yarn run --silent readme && yarn run --silent lint",
+    "test": "yarn run --silent",
+    "tests-only": "node test",
+    "postlint": "",
+    "build": "yarn run clean && tsc --outDir dist --declaration --declarationDir types",
+    "clean": "rimraf dist types"
+  },
+  "bugs": {
+    "url": "https://github.com/dylan-7/joys-utils/issues"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "license": "ISC"
+}

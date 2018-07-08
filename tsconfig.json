@@ -1,0 +1,21 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "target": "es5",
+    "lib": [
+      "es6",
+      "es2017",
+      "es2017.object",
+      "dom"
+    ],
+    "experimentalDecorators": true,
+    "moduleResolution": "node"
+  },
+  "exclude": [
+    "node_modules",
+    "examples",
+    "types",
+    "test"
+  ]
+}
