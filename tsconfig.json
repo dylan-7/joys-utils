@@ -3,6 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "target": "es5",
+    "rootDir": "lib",
     "lib": [
       "es6",
       "dom",
