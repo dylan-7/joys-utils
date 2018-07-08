@@ -2,13 +2,13 @@
   "name": "joys-utils",
   "description": "utils",
   "homepage": "https://github.com/dylan-7/joys-utils",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "dylan",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dylan-7/joys-utils.git"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "contributors": [],
   "keywords": [
     "utils",
