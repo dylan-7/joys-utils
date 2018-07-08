@@ -1,6 +1,5 @@
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var moment_timezone_1 = require("moment-timezone");
+import moment from 'moment-timezone';
 /**
  * @desc
  * 返回开始/结束时间对象
@@ -18,7 +17,7 @@ var moment_timezone_1 = require("moment-timezone");
  */
 var periodTime = function (_a) {
     var _b = _a.start, start = _b === void 0 ? 'start_date' : _b, _c = _a.end, end = _c === void 0 ? 'end_date' : _c, _d = _a.format, format = _d === void 0 ? 'YYYY-MM-DD' : _d, _e = _a.defaultTime, defaultTime = _e === void 0 ? 'today' : _e, _f = _a.tz, tz = _f === void 0 ? 'est' : _f;
-    moment_timezone_1.default.locale('zh');
+    moment.locale('zh');
     var startTime = '';
     var endTime = '';
     if (/(HH|mm|ss)/.test(format)) {
@@ -26,7 +25,7 @@ var periodTime = function (_a) {
         endTime = ' 23:59:59';
     }
     var privateFormat = 'YYYY-MM-DD';
-    var timeZone = tz === 'beiJin' ? moment_timezone_1.default() : moment_timezone_1.default().tz('America/Caracas');
+    var timeZone = tz === 'beiJin' ? moment() : moment().tz('America/Caracas');
     var result = {};
     switch (defaultTime) {
         case 'today':
@@ -55,4 +54,4 @@ var periodTime = function (_a) {
     return result;
 };
 /** periodTime */
-exports.default = periodTime;
+export default periodTime;

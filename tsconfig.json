@@ -1,21 +1,18 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "module": "esnext",
     "target": "es5",
     "lib": [
       "es6",
-      "es2017",
+      "dom",
       "es2017.object",
-      "dom"
+      "esnext"
     ],
     "experimentalDecorators": true,
     "moduleResolution": "node"
   },
   "exclude": [
     "node_modules",
-    "examples",
-    "types",
-    "test"
   ]
 }
