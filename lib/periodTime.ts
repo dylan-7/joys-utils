@@ -15,9 +15,9 @@ import moment from 'moment-timezone';
  * tz: (string) 时区，est | beiJin，默认美东时区
  * 
  * @example
- * ESTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
+ * periodTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
  */
-const ESTime = ({
+const periodTime = ({
   start = 'start_date', end = 'end_date', format = 'YYYY-MM-DD', defaultTime = 'today', tz = 'est'
 }) => {
   moment.locale('zh');
@@ -59,4 +59,4 @@ const ESTime = ({
 };
 
 /** periodTime */
-export default ESTime;
+export default periodTime;
