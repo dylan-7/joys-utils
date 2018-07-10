@@ -1,2 +1,2 @@
-declare const esClock: (title: any) => string;
+declare const esClock: (title?: string) => any;
 export default esClock;
