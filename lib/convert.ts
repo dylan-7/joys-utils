@@ -1,6 +1,6 @@
 'use strict';
 
-import { has, isArray, isEmpty, size, isObject, isNumber } from 'lodash/fp';
+import { has, isArray, isEmpty, size, isObject, isNumber, isPlainObject } from 'lodash/fp';
 
 /**
  * 转换金钱/赔率
@@ -10,51 +10,72 @@ import { has, isArray, isEmpty, size, isObject, isNumber } from 'lodash/fp';
  * 发送数据乘 100
  */
 
-const convert = function(
-  fields: {'D100'?: (string)[], 'M100'?: (string)[], 'odds'?: (string)[]},
-  result: Result,
-) {
+const convert = function( fields: Fields, result: Result) {
   const hasFields = size(fields) > 0;
-  const { data = [], attributes } = result;
+  const { attributes } = result;
   const divideValue = 100;  // 被除数值
   const oddsValue = 3; // 小数点后 3 位
 
   // 数据为对象数组
-  if (hasFields && has('data', result) && isArray(data)) {
-    data.map(item => {
-      // 除 100
-      if (has('D100', fields) && !isEmpty(fields.D100)) {
-        const divideFields = fields.D100 || [];
-        for (let p in item) {
-          if (p) {
-            divideFields.map((v: string) => {
-              if (v === p) {
-                item[p] = item[p] / divideValue;
-              }
-            });
+  if (hasFields && (has('data', result) && isArray(result.data) || isPlainObject(result))) {
+    const { data = [] } = result;
+
+    if (isArray(data)) {
+      data.map(item => {
+        // 除 100
+        if (has('D100', fields) && !isEmpty(fields.D100)) {
+          const divideFields = fields.D100 || [];
+          for (let p in item) {
+            if (p) {
+              divideFields.map((v: string) => {
+                if (v === p) {
+                  item[p] = item[p] / divideValue;
+                }
+              });
+            }
           }
+        }
+        // 赔率
+        if (has('Odds', fields) && !isEmpty(fields.Odds)) {
+          const oddsFields = fields.Odds || [];
+          for (let p in item) {
+            if (p) {
+              oddsFields.map((v: string) => {
+                if (v === p) {
+                  const isNum = isNumber(item[p]);
+                  const itemStr = `${item[p]}`;
+                  if (!!itemStr.indexOf('.')) {
+                    const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                    // 还原数据类型
+                    item[p] = isNum ? Number(itemOk) : itemOk;
+                  }
+                }
+              });
+            }
+          }
+        } 
+      });
+    }
+
+    // 提交数据
+    if (has('Odds', fields) && isPlainObject(result)) {
+      for (let p in result) {
+        if (p) {
+          const oddsFields = fields.Odds || [];
+          oddsFields.map((v: string) => {
+            if (v === p) {
+              const isNum = isNumber(result[p]);
+              const itemStr = `${result[p]}`;
+              if (!!itemStr.indexOf('.')) {
+                const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                // 还原数据类型
+                result[p] = isNum ? Number(itemOk) : itemOk;
+              }
+            }
+          });
         }
       }
-      // 赔率
-      if (has('odds', fields) && !isEmpty(fields.odds)) {
-        const oddsFields = fields.odds || [];
-        for (let p in item) {
-          if (p) {
-            oddsFields.map((v: string) => {
-              if (v === p) {
-                const isNum = isNumber(item[p]);
-                const itemStr = `${item[p]}`;
-                if (!!itemStr.indexOf('.')) {
-                  const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
-                  // 还原数据类型
-                  item[p] = isNum ? Number(itemOk) : itemOk;
-                }
-              }
-            });
-          }
-        }
-      } 
-    });
+    }
   }
   // 小计/总计
   if (hasFields && has('attributes', result) && isObject(attributes)
@@ -79,6 +100,12 @@ const convert = function(
 
 /** convert */
 export default convert;
+
+interface Fields {
+  'D100'?: (string)[];  // 除 100
+  'M100'?: (string)[];  // 乘 100
+  'Odds'?: (string)[];  // 赔率
+}
 
 interface Result {
   data?: (object)[];

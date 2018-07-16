@@ -5,11 +5,7 @@
  * 获取数据除 100
  * 发送数据乘 100
  */
-declare const convert: (fields: {
-    'D100'?: string[];
-    'M100'?: string[];
-    'odds'?: string[];
-}, result: Result) => {
+declare const convert: (fields: Fields, result: Result) => {
     data?: object[];
     attributes?: {
         size: number;
@@ -35,6 +31,11 @@ declare const convert: (fields: {
 };
 /** convert */
 export default convert;
+interface Fields {
+    'D100'?: (string)[];
+    'M100'?: (string)[];
+    'Odds'?: (string)[];
+}
 interface Result {
     data?: (object)[];
     attributes?: {
