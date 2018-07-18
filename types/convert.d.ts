@@ -1,9 +1,9 @@
 /**
- * 转换金钱/赔率
+ * 转换金额/赔率
  *
  * 赔率保留小数点后 3 位
- * 获取数据除 100
- * 发送数据乘 100
+ * 获取金额除 100
+ * 发送金额乘 100
  */
 declare const convert: (fields: Fields, result: Result) => {
     data?: object[];

@@ -12,7 +12,7 @@ import moment from 'moment-timezone';
  * end (string) 结束时间名称
  * format (string) 时间格式，默认 年-月-日
  * defaultTime (string) 默认时间，today | yesterday | week | month | lastMonth, 默认今日
- * tz: (string) 时区，est | beiJin，默认美东时区
+ * tz: (string) 时区，est | beiJing，默认美东时区
  * 
  * @example
  * periodTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
@@ -28,7 +28,7 @@ const periodTime = ({
     endTime = ' 23:59:59';
   }
   const privateFormat = 'YYYY-MM-DD';
-  const timeZone = tz === 'beiJin' ? moment() : moment().tz('America/Caracas');
+  const timeZone = tz === 'beiJing' ? moment() : moment().tz('America/Caracas');
   const result = {};
 
   switch (defaultTime) {

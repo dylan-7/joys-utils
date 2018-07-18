@@ -9,26 +9,27 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import { has, isArray, isEmpty, size, isObject, isNumber, isPlainObject } from 'lodash/fp';
 /**
- * 转换金钱/赔率
+ * 转换金额/赔率
  *
  * 赔率保留小数点后 3 位
- * 获取数据除 100
- * 发送数据乘 100
+ * 获取金额除 100
+ * 发送金额乘 100
  */
 var convert = function (fields, result) {
     var hasFields = size(fields) > 0;
     var attributes = result.attributes;
-    var divideValue = 100; // 被除数值
+    var divideValue = 100; // 除以数值
+    var multiplyValue = 100; // 乘以数值
     var oddsValue = 3; // 小数点后 3 位
-    // 数据为对象数组
     if (hasFields && (has('data', result) && isArray(result.data) || isPlainObject(result))) {
         var _a = result.data, data = _a === void 0 ? [] : _a;
+        // 获取金额
         if (isArray(data)) {
             data.map(function (item) {
                 // 除 100
                 if (has('D100', fields) && !isEmpty(fields.D100)) {
                     var divideFields = fields.D100 || [];
-                    var _loop_2 = function (p) {
+                    var _loop_3 = function (p) {
                         if (p) {
                             divideFields.map(function (v) {
                                 if (v === p) {
@@ -38,13 +39,13 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_2(p);
+                        _loop_3(p);
                     }
                 }
                 // 赔率
                 if (has('Odds', fields) && !isEmpty(fields.Odds)) {
                     var oddsFields = fields.Odds || [];
-                    var _loop_3 = function (p) {
+                    var _loop_4 = function (p) {
                         if (p) {
                             oddsFields.map(function (v) {
                                 if (v === p) {
@@ -60,23 +61,44 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_3(p);
+                        _loop_4(p);
                     }
                 }
             });
         }
-        // 提交数据
-        if (has('Odds', fields) && isPlainObject(result)) {
+        // 提交金额
+        if (has('M100', fields) && isPlainObject(result)) {
             var _loop_1 = function (p) {
+                if (p) {
+                    var multiplyFields = fields.M100 || [];
+                    multiplyFields.map(function (v) {
+                        if (v === p) {
+                            var itemNum = Number(result[p]);
+                            result[p] = isNumber(result[p]) ? Number(itemNum * multiplyValue) : (itemNum * multiplyValue).toString();
+                        }
+                    });
+                }
+            };
+            for (var p in result) {
+                _loop_1(p);
+            }
+        }
+        // 提交赔率
+        if (has('Odds', fields) && isPlainObject(result)) {
+            var _loop_2 = function (p) {
                 if (p) {
                     var oddsFields = fields.Odds || [];
                     oddsFields.map(function (v) {
                         if (v === p) {
                             var isNum = isNumber(result[p]);
                             var itemStr = "" + result[p];
-                            if (!!itemStr.indexOf('.')) {
-                                var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                            if (itemStr.indexOf('.') !== -1) {
+                                var itemOk_1 = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
                                 // 还原数据类型
+                                result[p] = isNum ? Number(itemOk_1) : itemOk_1;
+                            }
+                            if (/\.$/.test(itemStr)) {
+                                var itemOk = itemStr + '000';
                                 result[p] = isNum ? Number(itemOk) : itemOk;
                             }
                         }
@@ -84,7 +106,7 @@ var convert = function (fields, result) {
                 }
             };
             for (var p in result) {
-                _loop_1(p);
+                _loop_2(p);
             }
         }
     }

@@ -34,4 +34,4 @@ periodTime({
 | end | end time name | string | 'end_date'
 | format | time format | string | 'YYYY-MM-DD'
 | defaultTime | default initial time | `today` \| `yesterday` \| `week` \| `month` \| `lastMonth` | today
-| tz | time zone | `est` \| `beiJin` | est
+| tz | time zone | `est` \| `beiJing` | est

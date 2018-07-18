@@ -3,23 +3,23 @@
 import { has, isArray, isEmpty, size, isObject, isNumber, isPlainObject } from 'lodash/fp';
 
 /**
- * 转换金钱/赔率
+ * 转换金额/赔率
  * 
  * 赔率保留小数点后 3 位
- * 获取数据除 100
- * 发送数据乘 100
+ * 获取金额除 100
+ * 发送金额乘 100
  */
 
 const convert = function( fields: Fields, result: Result) {
   const hasFields = size(fields) > 0;
   const { attributes } = result;
-  const divideValue = 100;  // 被除数值
+  const divideValue = 100;  // 除以数值
+  const multiplyValue = 100;  // 乘以数值
   const oddsValue = 3; // 小数点后 3 位
 
-  // 数据为对象数组
   if (hasFields && (has('data', result) && isArray(result.data) || isPlainObject(result))) {
     const { data = [] } = result;
-
+    // 获取金额
     if (isArray(data)) {
       data.map(item => {
         // 除 100
@@ -57,7 +57,22 @@ const convert = function( fields: Fields, result: Result) {
       });
     }
 
-    // 提交数据
+    // 提交金额
+    if (has('M100', fields) && isPlainObject(result)) {
+      for (let p in result) {
+        if (p) {
+          const multiplyFields = fields.M100 || [];
+          multiplyFields.map((v: string) => {
+            if (v === p) {
+              const itemNum = Number(result[p]);
+              result[p] = isNumber(result[p]) ? Number(itemNum * multiplyValue) : (itemNum * multiplyValue).toString();
+            }
+          });
+        }
+      }
+    }
+
+    // 提交赔率
     if (has('Odds', fields) && isPlainObject(result)) {
       for (let p in result) {
         if (p) {
@@ -66,9 +81,13 @@ const convert = function( fields: Fields, result: Result) {
             if (v === p) {
               const isNum = isNumber(result[p]);
               const itemStr = `${result[p]}`;
-              if (!!itemStr.indexOf('.')) {
+              if (itemStr.indexOf('.') !== -1) {
                 const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
                 // 还原数据类型
+                result[p] = isNum ? Number(itemOk) : itemOk;
+              }
+              if (/\.$/.test(itemStr)) {
+                var itemOk = itemStr + '000';
                 result[p] = isNum ? Number(itemOk) : itemOk;
               }
             }
