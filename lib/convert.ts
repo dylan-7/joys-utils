@@ -58,7 +58,7 @@ const convert = function( fields: Fields, result: Result) {
     }
 
     // 获取金额
-    if (has('M100', fields) && !isEmpty(result) && isPlainObject(result)) {
+    if (has('D100', fields) && !isEmpty(result) && isPlainObject(result)) {
       // 除 100
       const divideFields = fields.D100 || [];
       for (let p in result) {
@@ -123,7 +123,7 @@ const convert = function( fields: Fields, result: Result) {
                 result[p] = isNum ? Number(itemOk) : itemOk;
               }
               if (/\.$/.test(itemStr)) {
-                var itemOk = itemStr + '000';
+                const itemOk = itemStr + '000';
                 result[p] = isNum ? Number(itemOk) : itemOk;
               }
             }

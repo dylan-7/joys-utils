@@ -67,7 +67,7 @@ var convert = function (fields, result) {
             });
         }
         // 获取金额
-        if (has('M100', fields) && !isEmpty(result) && isPlainObject(result)) {
+        if (has('D100', fields) && !isEmpty(result) && isPlainObject(result)) {
             // 除 100
             var divideFields = fields.D100 || [];
             var _loop_1 = function (p) {
@@ -133,9 +133,9 @@ var convert = function (fields, result) {
                             var isNum = isNumber(result[p]);
                             var itemStr = "" + result[p];
                             if (itemStr.indexOf('.') !== -1) {
-                                var itemOk_1 = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                                var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
                                 // 还原数据类型
-                                result[p] = isNum ? Number(itemOk_1) : itemOk_1;
+                                result[p] = isNum ? Number(itemOk) : itemOk;
                             }
                             if (/\.$/.test(itemStr)) {
                                 var itemOk = itemStr + '000';
