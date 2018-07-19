@@ -29,7 +29,7 @@ var convert = function (fields, result) {
                 // 除 100
                 if (has('D100', fields) && !isEmpty(fields.D100)) {
                     var divideFields = fields.D100 || [];
-                    var _loop_3 = function (p) {
+                    var _loop_5 = function (p) {
                         if (p) {
                             divideFields.map(function (v) {
                                 if (v === p) {
@@ -39,13 +39,13 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_3(p);
+                        _loop_5(p);
                     }
                 }
                 // 赔率
                 if (has('Odds', fields) && !isEmpty(fields.Odds)) {
                     var oddsFields = fields.Odds || [];
-                    var _loop_4 = function (p) {
+                    var _loop_6 = function (p) {
                         if (p) {
                             oddsFields.map(function (v) {
                                 if (v === p) {
@@ -61,14 +61,54 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_4(p);
+                        _loop_6(p);
                     }
                 }
             });
         }
+        // 获取金额
+        if (has('M100', fields) && !isEmpty(result) && isPlainObject(result)) {
+            // 除 100
+            var divideFields = fields.D100 || [];
+            var _loop_1 = function (p) {
+                if (p) {
+                    divideFields.map(function (v) {
+                        var isNum = isNumber(result[p]);
+                        if (v === p) {
+                            result[p] = isNum ? Number(result[p] / divideValue) : result[p] / divideValue;
+                        }
+                    });
+                }
+            };
+            for (var p in result) {
+                _loop_1(p);
+            }
+        }
+        // 获取赔率
+        if (has('Odds', fields) && !isEmpty(fields.Odds) && isPlainObject(result)) {
+            var oddsFields = fields.Odds || [];
+            var _loop_2 = function (p) {
+                if (p) {
+                    oddsFields.map(function (v) {
+                        if (v === p) {
+                            var isNum = isNumber(result[p]);
+                            var itemStr = "" + result[p];
+                            if (!!itemStr.indexOf('.')) {
+                                var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                                // 还原数据类型
+                                result[p] = isNum ? Number(itemOk) : itemOk;
+                            }
+                        }
+                    });
+                }
+            };
+            for (var p in result) {
+                _loop_2(p);
+            }
+        }
         // 提交金额
         if (has('M100', fields) && isPlainObject(result)) {
-            var _loop_1 = function (p) {
+            var _loop_3 = function (p) {
                 if (p) {
                     var multiplyFields = fields.M100 || [];
                     multiplyFields.map(function (v) {
@@ -80,12 +120,12 @@ var convert = function (fields, result) {
                 }
             };
             for (var p in result) {
-                _loop_1(p);
+                _loop_3(p);
             }
         }
         // 提交赔率
         if (has('Odds', fields) && isPlainObject(result)) {
-            var _loop_2 = function (p) {
+            var _loop_4 = function (p) {
                 if (p) {
                     var oddsFields = fields.Odds || [];
                     oddsFields.map(function (v) {
@@ -106,7 +146,7 @@ var convert = function (fields, result) {
                 }
             };
             for (var p in result) {
-                _loop_2(p);
+                _loop_4(p);
             }
         }
     }

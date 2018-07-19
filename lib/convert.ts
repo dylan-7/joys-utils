@@ -57,6 +57,42 @@ const convert = function( fields: Fields, result: Result) {
       });
     }
 
+    // 获取金额
+    if (has('M100', fields) && !isEmpty(result) && isPlainObject(result)) {
+      // 除 100
+      const divideFields = fields.D100 || [];
+      for (let p in result) {
+        if (p) {
+          divideFields.map((v: string) => {
+            const isNum = isNumber(result[p]);
+            if (v === p) {
+              result[p] = isNum ? Number(result[p] / divideValue) : result[p] / divideValue;
+            }
+          });
+        }
+      }
+    }
+
+    // 获取赔率
+    if (has('Odds', fields)  && !isEmpty(fields.Odds) && isPlainObject(result)) {
+      const oddsFields = fields.Odds || [];
+      for (let p in result) {
+        if (p) {
+          oddsFields.map((v: string) => {
+            if (v === p) {
+              const isNum = isNumber(result[p]);
+              const itemStr = `${result[p]}`;
+              if (!!itemStr.indexOf('.')) {
+                const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
+                // 还原数据类型
+                result[p] = isNum ? Number(itemOk) : itemOk;
+              }
+            }
+          });
+        }
+      }
+    }
+
     // 提交金额
     if (has('M100', fields) && isPlainObject(result)) {
       for (let p in result) {
