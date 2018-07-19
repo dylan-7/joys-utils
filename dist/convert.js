@@ -67,20 +67,21 @@ var convert = function (fields, result) {
             });
         }
         // 获取金额
-        if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result)) {
+        if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
             // 除 100
             var divideFields = fields.D100 || [];
+            var resultOk_1 = result.data;
             var _loop_1 = function (p) {
                 if (p) {
                     divideFields.map(function (v) {
-                        var isNum = isNumber(result[p]);
+                        var isNum = isNumber(resultOk_1[p]);
                         if (v === p) {
-                            result[p] = isNum ? Number(result[p] / divideValue) : result[p] / divideValue;
+                            resultOk_1[p] = isNum ? Number(resultOk_1[p] / divideValue) : resultOk_1[p] / divideValue;
                         }
                     });
                 }
             };
-            for (var p in result) {
+            for (var p in resultOk_1) {
                 _loop_1(p);
             }
         }

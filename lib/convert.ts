@@ -58,15 +58,16 @@ const convert = function( fields: Fields, result: Result) {
     }
 
     // 获取金额
-    if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result)) {
+    if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
       // 除 100
       const divideFields = fields.D100 || [];
-      for (let p in result) {
+      const resultOk: object = result.data;
+      for (let p in resultOk) {
         if (p) {
           divideFields.map((v: string) => {
-            const isNum = isNumber(result[p]);
+            const isNum = isNumber(resultOk[p]);
             if (v === p) {
-              result[p] = isNum ? Number(result[p] / divideValue) : result[p] / divideValue;
+              resultOk[p] = isNum ? Number(resultOk[p] / divideValue) : resultOk[p] / divideValue;
             }
           });
         }
