@@ -75,18 +75,19 @@ const convert = function( fields: Fields, result: Result) {
     }
 
     // 获取赔率
-    if (has('Odds', fields)  && !isEmpty(fields.Odds) && isPlainObject(result)) {
+    if (has('Odds', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
       const oddsFields = fields.Odds || [];
-      for (let p in result) {
+      const resultOk: object = result.data;
+      for (let p in resultOk) {
         if (p) {
           oddsFields.map((v: string) => {
             if (v === p) {
-              const isNum = isNumber(result[p]);
-              const itemStr = `${result[p]}`;
+              const isNum = isNumber(resultOk[p]);
+              const itemStr = `${resultOk[p]}`;
               if (!!itemStr.indexOf('.')) {
                 const itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
                 // 还原数据类型
-                result[p] = isNum ? Number(itemOk) : itemOk;
+                resultOk[p] = isNum ? Number(itemOk) : itemOk;
               }
             }
           });

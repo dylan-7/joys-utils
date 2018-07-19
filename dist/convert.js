@@ -86,24 +86,25 @@ var convert = function (fields, result) {
             }
         }
         // 获取赔率
-        if (has('Odds', fields) && !isEmpty(fields.Odds) && isPlainObject(result)) {
+        if (has('Odds', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
             var oddsFields = fields.Odds || [];
+            var resultOk_2 = result.data;
             var _loop_2 = function (p) {
                 if (p) {
                     oddsFields.map(function (v) {
                         if (v === p) {
-                            var isNum = isNumber(result[p]);
-                            var itemStr = "" + result[p];
+                            var isNum = isNumber(resultOk_2[p]);
+                            var itemStr = "" + resultOk_2[p];
                             if (!!itemStr.indexOf('.')) {
                                 var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
                                 // 还原数据类型
-                                result[p] = isNum ? Number(itemOk) : itemOk;
+                                resultOk_2[p] = isNum ? Number(itemOk) : itemOk;
                             }
                         }
                     });
                 }
             };
-            for (var p in result) {
+            for (var p in resultOk_2) {
                 _loop_2(p);
             }
         }
