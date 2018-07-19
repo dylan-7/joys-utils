@@ -67,7 +67,7 @@ var convert = function (fields, result) {
             });
         }
         // 获取金额
-        if (has('D100', fields) && !isEmpty(result) && isPlainObject(result)) {
+        if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result)) {
             // 除 100
             var divideFields = fields.D100 || [];
             var _loop_1 = function (p) {

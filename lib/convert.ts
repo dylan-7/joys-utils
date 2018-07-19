@@ -58,7 +58,7 @@ const convert = function( fields: Fields, result: Result) {
     }
 
     // 获取金额
-    if (has('D100', fields) && !isEmpty(result) && isPlainObject(result)) {
+    if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result)) {
       // 除 100
       const divideFields = fields.D100 || [];
       for (let p in result) {
