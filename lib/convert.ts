@@ -157,17 +157,15 @@ const convert = function( fields: Fields, result: Result) {
       }
     }
     if (attributes && attributes.total_sum) {
+      const divideFields = fields.D100 || [];
       for (let p in attributes.total_sum) {
-        const divideFields = fields.D100 || [];
-        for (let p in attributes.total_sum) {
-          divideFields.map(v => {
-            const isNum = isNumber(attributes.total_sum[p]);
-            if (p === v) {
-              const itemOk = attributes.total_sum[p] / divideValue;;
-              attributes.total_sum[p] = isNum ? Number(itemOk) : itemOk;
-            }
-          });
-        }
+        divideFields.map(v => {
+          const isNum = isNumber(attributes.total_sum[p]);
+          if (p === v) {
+            const itemOk = attributes.total_sum[p] / divideValue;;
+            attributes.total_sum[p] = isNum ? Number(itemOk) : itemOk;
+          }
+        });
       }
     }
   }

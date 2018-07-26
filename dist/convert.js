@@ -11,6 +11,13 @@ import { has, isArray, isEmpty, size, isObject, isNumber, isPlainObject } from '
 /**
  * 转换金额/赔率
  *
+ * @param
+ * bet_times (number)  投注笔数
+ * bet_amount (number) 投注金额
+ * bet_valid (number) 有效投注金额
+ * rebeat (number) 返点 返现 退水
+ * win_lose (number) 输赢
+ *
  * 赔率保留小数点后 3 位
  * 获取金额除 100
  * 发送金额乘 100
@@ -29,7 +36,7 @@ var convert = function (fields, result) {
                 // 除 100
                 if (has('D100', fields) && !isEmpty(fields.D100)) {
                     var divideFields = fields.D100 || [];
-                    var _loop_5 = function (p) {
+                    var _loop_7 = function (p) {
                         if (p) {
                             divideFields.map(function (v) {
                                 if (v === p) {
@@ -39,13 +46,13 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_5(p);
+                        _loop_7(p);
                     }
                 }
                 // 赔率
                 if (has('Odds', fields) && !isEmpty(fields.Odds)) {
                     var oddsFields = fields.Odds || [];
-                    var _loop_6 = function (p) {
+                    var _loop_8 = function (p) {
                         if (p) {
                             oddsFields.map(function (v) {
                                 if (v === p) {
@@ -61,7 +68,7 @@ var convert = function (fields, result) {
                         }
                     };
                     for (var p in item) {
-                        _loop_6(p);
+                        _loop_8(p);
                     }
                 }
             });
@@ -156,17 +163,35 @@ var convert = function (fields, result) {
     if (hasFields && has('attributes', result) && isObject(attributes)
         && (has('page_sum', attributes) || has('total_sum', attributes))) {
         if (attributes && attributes.page_sum) {
+            var divideFields = fields.D100 || [];
+            var _loop_5 = function (p) {
+                divideFields.map(function (v) {
+                    var isNum = isNumber(attributes.page_sum[p]);
+                    if (p === v) {
+                        var itemOk = attributes.page_sum[p] / divideValue;
+                        ;
+                        attributes.page_sum[p] = isNum ? Number(itemOk) : itemOk;
+                    }
+                });
+            };
             for (var p in attributes.page_sum) {
-                if (p) {
-                    attributes.page_sum[p] = attributes.page_sum[p] / divideValue;
-                }
+                _loop_5(p);
             }
         }
         if (attributes && attributes.total_sum) {
+            var divideFields = fields.D100 || [];
+            var _loop_6 = function (p) {
+                divideFields.map(function (v) {
+                    var isNum = isNumber(attributes.total_sum[p]);
+                    if (p === v) {
+                        var itemOk = attributes.total_sum[p] / divideValue;
+                        ;
+                        attributes.total_sum[p] = isNum ? Number(itemOk) : itemOk;
+                    }
+                });
+            };
             for (var p in attributes.total_sum) {
-                if (p) {
-                    attributes.total_sum[p] = attributes.total_sum[p] / divideValue;
-                }
+                _loop_6(p);
             }
         }
     }

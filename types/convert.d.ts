@@ -1,6 +1,13 @@
 /**
  * 转换金额/赔率
  *
+ * @param
+ * bet_times (number)  投注笔数
+ * bet_amount (number) 投注金额
+ * bet_valid (number) 有效投注金额
+ * rebeat (number) 返点 返现 退水
+ * win_lose (number) 输赢
+ *
  * 赔率保留小数点后 3 位
  * 获取金额除 100
  * 发送金额乘 100
