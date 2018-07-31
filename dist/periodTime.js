@@ -25,28 +25,35 @@ var periodTime = function (_a) {
         endTime = ' 23:59:59';
     }
     var privateFormat = 'YYYY-MM-DD';
-    var timeZone = tz === 'beiJing' ? moment() : moment().tz('America/Caracas');
+    var timeZone = function () {
+        return moment().tz('America/Caracas');
+    };
+    if (tz === 'beiJing') {
+        timeZone = function () {
+            return moment();
+        };
+    }
     var result = {};
     switch (defaultTime) {
         case 'today':
-            result[start] = timeZone.startOf('day').format(privateFormat) + startTime;
-            result[end] = timeZone.endOf('day').format(privateFormat) + endTime;
+            result[start] = timeZone().startOf('day').format(privateFormat) + startTime;
+            result[end] = timeZone().endOf('day').format(privateFormat) + endTime;
             break;
         case 'yesterday':
-            result[start] = timeZone.subtract(1, 'day').startOf('day').format(privateFormat) + startTime;
-            result[end] = timeZone.endOf('day').format(privateFormat) + endTime;
+            result[start] = timeZone().subtract(1, 'day').startOf('day').format(privateFormat) + startTime;
+            result[end] = timeZone().subtract(1, 'day').endOf('day').format(privateFormat) + endTime;
             break;
         case 'week':
-            result[start] = timeZone.startOf('week').format(privateFormat) + startTime;
-            result[end] = timeZone.endOf('week').format(privateFormat) + endTime;
+            result[start] = timeZone().startOf('week').format(privateFormat) + startTime;
+            result[end] = timeZone().endOf('week').format(privateFormat) + endTime;
             break;
         case 'month':
-            result[start] = timeZone.startOf('month').format(privateFormat) + startTime;
-            result[end] = timeZone.endOf('month').format(privateFormat) + endTime;
+            result[start] = timeZone().startOf('month').format(privateFormat) + startTime;
+            result[end] = timeZone().endOf('month').format(privateFormat) + endTime;
             break;
         case 'lastMonth':
-            result[start] = timeZone.subtract(1, 'month').startOf('month').format(privateFormat) + startTime;
-            result[end] = timeZone.endOf('month').format(privateFormat) + endTime;
+            result[start] = timeZone().subtract(1, 'month').startOf('month').format(privateFormat) + startTime;
+            result[end] = timeZone().subtract(1, 'month').endOf('month').format(privateFormat) + endTime;
             break;
         default:
             return {};
