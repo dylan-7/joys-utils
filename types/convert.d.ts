@@ -6,6 +6,7 @@
  * bet_amount (number) 投注金额
  * bet_valid (number) 有效投注金额
  * rebeat (number) 返点 返现 退水
+ * payout: number; // 中奖金额
  * win_lose (number) 输赢
  *
  * 赔率保留小数点后 3 位
@@ -23,6 +24,7 @@ declare const convert: (fields: Fields, result: Result) => {
             bet_amount: number;
             bet_valid: number;
             rebeat: number;
+            payout: number;
             win_lose: number;
         };
         total_sum: {
@@ -30,6 +32,7 @@ declare const convert: (fields: Fields, result: Result) => {
             bet_amount: number;
             bet_valid: number;
             rebeat: number;
+            payout: number;
             win_lose: number;
         };
     };
@@ -54,6 +57,7 @@ interface Result {
             bet_amount: number;
             bet_valid: number;
             rebeat: number;
+            payout: number;
             win_lose: number;
         };
         total_sum: {
@@ -61,6 +65,7 @@ interface Result {
             bet_amount: number;
             bet_valid: number;
             rebeat: number;
+            payout: number;
             win_lose: number;
         };
     };
