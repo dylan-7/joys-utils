@@ -7,196 +7,138 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import { has, isArray, isEmpty, size, isObject, isNumber, isPlainObject } from 'lodash/fp';
+import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject } from 'lodash/fp';
 /**
  * 转换金额/赔率
  *
- * @param
- * bet_times (number)  投注笔数
- * bet_amount (number) 投注金额
- * bet_valid (number) 有效投注金额
- * rebeat (number) 返点 返现 退水
- * payout: number; // 中奖金额
- * win_lose (number) 输赢
+ * @version
+ * v2.0.0
  *
+ * @author
+ * dylan
+ *
+ * @description
  * 赔率保留小数点后 3 位
  * 获取金额除 100
  * 发送金额乘 100
+ *
+ * @example
+ * convert({D: ['payout'], Multiple: 100}, {M: ['payout'], Multiple: 100}, {O: ['odds], Float: 3})
  */
-var convert = function (fields, result) {
-    var hasFields = size(fields) > 0;
-    var attributes = result.attributes;
-    var divideValue = 100; // 除以数值
-    var multiplyValue = 100; // 乘以数值
-    var oddsValue = 3; // 小数点后 3 位
-    if (hasFields && (has('data', result) && isArray(result.data) || isPlainObject(result))) {
-        var _a = result.data, data = _a === void 0 ? [] : _a;
-        // 获取金额
-        if (isArray(data)) {
-            data.map(function (item) {
-                // 除 100
-                if (has('D100', fields) && !isEmpty(fields.D100)) {
-                    var divideFields = fields.D100 || [];
-                    var _loop_7 = function (p) {
-                        if (p) {
-                            divideFields.map(function (v) {
-                                if (v === p) {
-                                    item[p] = item[p] / divideValue;
-                                }
-                            });
-                        }
-                    };
-                    for (var p in item) {
-                        _loop_7(p);
+var convert = function (data) {
+    if (data === void 0) { data = []; }
+    var rest = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        rest[_i - 1] = arguments[_i];
+    }
+    var plainData = data;
+    var plainDataList = data.data;
+    var divideFields = find(function (v) { return has('D', v); }, rest);
+    var multiplyFields = find(function (v) { return has('M', v); }, rest);
+    var oddsFields = find(function (v) { return has('O', v); }, rest);
+    var divide = divideFields && divideFields.D
+        ? __assign({}, divideFields, { Multiple: has('Multiple', divideFields) ? divideFields.Multiple : 100 }) : {};
+    var multiply = multiplyFields && multiplyFields.M
+        ? __assign({}, multiplyFields, { Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100 }) : {};
+    var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : 3 }) : {};
+    // 乘
+    // TODO: 用于数组
+    var multiplier = function (parent) {
+        map(function (field) {
+            if (parent[field] !== '') {
+                parent[field] = +parent[field] * multiply.Multiple;
+            }
+        }, multiply.M);
+    };
+    // 除
+    var divider = function (parent) {
+        map(function (field) {
+            if (parent[field] !== '') {
+                parent[field] = +parent[field] / divide.Multiple;
+            }
+        }, divide.D);
+    };
+    // 列表统计
+    function calc(obj) {
+        map(function (field) {
+            obj[field] = obj[field] / divide.Multiple;
+        }, keys(obj));
+    }
+    // 赔率
+    var odder = function (parent) {
+        map(function (field) {
+            if (parent[field] !== '') {
+                parent[field] = ("" + parent[field]).substring(0, (("" + parent[field]).indexOf('.') + odds.Float) + 1);
+            }
+        }, odds.O);
+    };
+    try {
+        // 提交金额 - 对象
+        // 忽略赔率
+        if (!isEmpty(plainData) && isObject(plainData) && isEmpty(odds)) {
+            map(function (field) {
+                if (plainData[field]) {
+                    plainData[field] = plainData[field] * multiply.Multiple;
+                }
+            }, keys(plainData));
+        }
+        // 列表 - 数组
+        // TODO: 数组二级金额
+        if (has('data', plainData) && isArray(plainDataList)) {
+            map(function (v) {
+                divider(v);
+                // 获取赔率
+                odder(v);
+            }, plainDataList);
+            // 列表 - 对象
+        }
+        else if (has('data', plainData) && isPlainObject(plainDataList)) {
+            divider(plainDataList);
+            odder(plainDataList);
+            // 有二级列表
+            map(function (field) {
+                var hasField = find(function (key) { return (has(key, plainDataList[field][0])); }, divide.D);
+                if (isArray(plainDataList[field]) && hasField) {
+                    map(function (v) {
+                        divider(v);
+                    }, plainDataList[field]);
+                }
+            }, keys(plainDataList));
+            // 提交赔率
+        }
+        else if (!isEmpty(plainData) && !isEmpty(odds)) {
+            map(function (field) {
+                var current = plainData[field];
+                if (current) {
+                    var dotIndex = ("" + current).indexOf('.');
+                    // 小数点部分
+                    var floatNumber_1 = times(constant(0), odds.Float);
+                    // 整数部分
+                    var intNumber = current;
+                    if (~dotIndex) {
+                        intNumber = ("" + current).substring(0, dotIndex);
+                        Array.from(("" + current).substring(dotIndex + 1)).map(function (v, i) {
+                            floatNumber_1[i] = +v;
+                        });
                     }
+                    // 转数字类型小数点最后的 0 会被忽略
+                    plainData[field] = intNumber + "." + floatNumber_1.join('');
                 }
-                // 赔率
-                if (has('Odds', fields) && !isEmpty(fields.Odds)) {
-                    var oddsFields = fields.Odds || [];
-                    var _loop_8 = function (p) {
-                        if (p) {
-                            oddsFields.map(function (v) {
-                                if (v === p) {
-                                    var isNum = isNumber(item[p]);
-                                    var itemStr = "" + item[p];
-                                    if (!!itemStr.indexOf('.')) {
-                                        var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
-                                        // 还原数据类型
-                                        item[p] = isNum ? Number(itemOk) : itemOk;
-                                    }
-                                }
-                            });
-                        }
-                    };
-                    for (var p in item) {
-                        _loop_8(p);
-                    }
-                }
-            });
+            }, odds.O);
         }
-        // 获取金额
-        if (has('D100', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
-            // 除 100
-            var divideFields = fields.D100 || [];
-            var resultOk_1 = result.data;
-            var _loop_1 = function (p) {
-                if (p) {
-                    divideFields.map(function (v) {
-                        var isNum = isNumber(resultOk_1[p]);
-                        if (v === p) {
-                            resultOk_1[p] = isNum ? Number(resultOk_1[p] / divideValue) : resultOk_1[p] / divideValue;
-                        }
-                    });
-                }
-            };
-            for (var p in resultOk_1) {
-                _loop_1(p);
-            }
+        // 总结
+        if (has('total_sum', plainData.attributes)) {
+            calc(plainData.attributes.total_sum);
         }
-        // 获取赔率
-        if (has('Odds', fields) && has('data', result) && isPlainObject(result.data) && !isEmpty(result.data)) {
-            var oddsFields = fields.Odds || [];
-            var resultOk_2 = result.data;
-            var _loop_2 = function (p) {
-                if (p) {
-                    oddsFields.map(function (v) {
-                        if (v === p) {
-                            var isNum = isNumber(resultOk_2[p]);
-                            var itemStr = "" + resultOk_2[p];
-                            if (!!itemStr.indexOf('.')) {
-                                var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
-                                // 还原数据类型
-                                resultOk_2[p] = isNum ? Number(itemOk) : itemOk;
-                            }
-                        }
-                    });
-                }
-            };
-            for (var p in resultOk_2) {
-                _loop_2(p);
-            }
-        }
-        // 提交金额
-        if (has('M100', fields) && isPlainObject(result)) {
-            var _loop_3 = function (p) {
-                if (p) {
-                    var multiplyFields = fields.M100 || [];
-                    multiplyFields.map(function (v) {
-                        if (v === p) {
-                            var itemNum = Number(result[p]);
-                            result[p] = isNumber(result[p]) ? Number(itemNum * multiplyValue) : (itemNum * multiplyValue).toString();
-                        }
-                    });
-                }
-            };
-            for (var p in result) {
-                _loop_3(p);
-            }
-        }
-        // 提交赔率
-        if (has('Odds', fields) && isPlainObject(result)) {
-            var _loop_4 = function (p) {
-                if (p) {
-                    var oddsFields = fields.Odds || [];
-                    oddsFields.map(function (v) {
-                        if (v === p) {
-                            var isNum = isNumber(result[p]);
-                            var itemStr = "" + result[p];
-                            if (itemStr.indexOf('.') !== -1) {
-                                var itemOk = itemStr.substring(0, itemStr.indexOf('.') + (oddsValue + 1));
-                                // 还原数据类型
-                                result[p] = isNum ? Number(itemOk) : itemOk;
-                            }
-                            if (/\.$/.test(itemStr)) {
-                                var itemOk = itemStr + '000';
-                                result[p] = isNum ? Number(itemOk) : itemOk;
-                            }
-                        }
-                    });
-                }
-            };
-            for (var p in result) {
-                _loop_4(p);
-            }
+        // 小结
+        if (has('page_sum', plainData.attributes)) {
+            calc(plainData.attributes.page_sum);
         }
     }
-    // 小计/总计
-    if (hasFields && has('attributes', result) && isObject(attributes)
-        && (has('page_sum', attributes) || has('total_sum', attributes))) {
-        if (attributes && attributes.page_sum) {
-            var divideFields = fields.D100 || [];
-            var _loop_5 = function (p) {
-                divideFields.map(function (v) {
-                    var isNum = isNumber(attributes.page_sum[p]);
-                    if (p === v) {
-                        var itemOk = attributes.page_sum[p] / divideValue;
-                        ;
-                        attributes.page_sum[p] = isNum ? Number(itemOk) : itemOk;
-                    }
-                });
-            };
-            for (var p in attributes.page_sum) {
-                _loop_5(p);
-            }
-        }
-        if (attributes && attributes.total_sum) {
-            var divideFields = fields.D100 || [];
-            var _loop_6 = function (p) {
-                divideFields.map(function (v) {
-                    var isNum = isNumber(attributes.total_sum[p]);
-                    if (p === v) {
-                        var itemOk = attributes.total_sum[p] / divideValue;
-                        ;
-                        attributes.total_sum[p] = isNum ? Number(itemOk) : itemOk;
-                    }
-                });
-            };
-            for (var p in attributes.total_sum) {
-                _loop_6(p);
-            }
-        }
+    catch (e) {
+        console.info("\uD83D\uDC1E: ", e);
     }
-    return __assign({}, result);
+    return __assign({}, plainData);
 };
 /** convert */
 export default convert;
