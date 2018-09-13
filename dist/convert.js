@@ -54,7 +54,7 @@ var convert = function (data) {
     var divider = function (parent) {
         map(function (field) {
             if (parent[field] !== '') {
-                parent[field] = +parent[field] / divide.Multiple;
+                parent[field] = parent[field] / divide.Multiple;
             }
         }, divide.D);
     };
@@ -74,8 +74,7 @@ var convert = function (data) {
     };
     try {
         // 提交金额 - 对象
-        // 忽略赔率
-        if (!isEmpty(plainData) && isObject(plainData) && isEmpty(odds)) {
+        if (!isEmpty(plainData) && isObject(plainData) && !has('data', plainData)) {
             map(function (field) {
                 if (plainData[field]) {
                     plainData[field] = plainData[field] * multiply.Multiple;
@@ -138,7 +137,8 @@ var convert = function (data) {
     catch (e) {
         console.info("\uD83D\uDC1E: ", e);
     }
-    return __assign({}, plainData);
+    var resultOK = plainDataList ? __assign({}, plainData, { data: plainDataList }) : __assign({}, plainData);
+    return resultOK;
 };
 /** convert */
 export default convert;

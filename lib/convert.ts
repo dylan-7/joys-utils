@@ -45,7 +45,7 @@ const convert = function(data: any = [], ...rest: any[]) {
   const divider = function(parent: object) {
     map((field: string) => {
       if (parent[field] !== '') {
-        parent[field] = +parent[field] / divide.Multiple
+        parent[field] = parent[field] / divide.Multiple
       }
     },  divide.D);
   }
@@ -68,8 +68,7 @@ const convert = function(data: any = [], ...rest: any[]) {
 
   try {
     // 提交金额 - 对象
-    // 忽略赔率
-    if (!isEmpty(plainData) && isObject(plainData) && isEmpty(odds)) {
+    if (!isEmpty(plainData) && isObject(plainData) && !has('data', plainData)) {
       map((field: string) => {
         if (plainData[field]) {
           plainData[field] = plainData[field] * multiply.Multiple
@@ -135,7 +134,8 @@ const convert = function(data: any = [], ...rest: any[]) {
     console.info(`🐞: `, e);
   }
 
-  return {...plainData};
+  const resultOK = plainDataList ? {...plainData, data: plainDataList } : {...plainData}
+  return resultOK;
 }
 
 /** convert */
