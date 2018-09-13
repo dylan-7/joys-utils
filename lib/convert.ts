@@ -6,7 +6,7 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * 转换金额/赔率
  * 
  * @version
- * v2.0.0
+ * v2.0.3
  * 
  * @author
  * dylan
@@ -32,11 +32,11 @@ const convert = function(data: any = [], ...rest: any[]) {
   const odds = oddsFields && oddsFields.O ? {...oddsFields, Float: has('Float', oddsFields) ? oddsFields.Float : 3} : {}
   
   // 乘
-  // TODO: 用于数组
+  // TODO: 提交为数组
   const multiplier = function(parent: object) {
     map((field: string) => {
-      if (parent[field] !== '') {
-        parent[field] = +parent[field] * multiply.Multiple
+      if (has(field, parent) && parent[field] !== '') {
+        parent[field] = parent[field] * multiply.Multiple
       }
     },  multiply.M)
   }
@@ -54,7 +54,7 @@ const convert = function(data: any = [], ...rest: any[]) {
   function calc(obj: object) {
     map((field: string) => {
       obj[field] = obj[field] / divide.Multiple;
-    },  keys(obj))
+    },  divide.D)
   }
 
   // 赔率
@@ -69,11 +69,7 @@ const convert = function(data: any = [], ...rest: any[]) {
   try {
     // 提交金额 - 对象
     if (!isEmpty(plainData) && isObject(plainData) && !has('data', plainData)) {
-      map((field: string) => {
-        if (plainData[field]) {
-          plainData[field] = plainData[field] * multiply.Multiple
-        }
-      },  keys(plainData))
+      multiplier(plainData)
     }
   
     // 列表 - 数组

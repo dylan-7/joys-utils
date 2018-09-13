@@ -12,7 +12,7 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * 转换金额/赔率
  *
  * @version
- * v2.0.0
+ * v2.0.3
  *
  * @author
  * dylan
@@ -42,11 +42,11 @@ var convert = function (data) {
         ? __assign({}, multiplyFields, { Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100 }) : {};
     var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : 3 }) : {};
     // 乘
-    // TODO: 用于数组
+    // TODO: 提交为数组
     var multiplier = function (parent) {
         map(function (field) {
-            if (parent[field] !== '') {
-                parent[field] = +parent[field] * multiply.Multiple;
+            if (has(field, parent) && parent[field] !== '') {
+                parent[field] = parent[field] * multiply.Multiple;
             }
         }, multiply.M);
     };
@@ -62,7 +62,7 @@ var convert = function (data) {
     function calc(obj) {
         map(function (field) {
             obj[field] = obj[field] / divide.Multiple;
-        }, keys(obj));
+        }, divide.D);
     }
     // 赔率
     var odder = function (parent) {
@@ -75,11 +75,7 @@ var convert = function (data) {
     try {
         // 提交金额 - 对象
         if (!isEmpty(plainData) && isObject(plainData) && !has('data', plainData)) {
-            map(function (field) {
-                if (plainData[field]) {
-                    plainData[field] = plainData[field] * multiply.Multiple;
-                }
-            }, keys(plainData));
+            multiplier(plainData);
         }
         // 列表 - 数组
         // TODO: 数组二级金额
