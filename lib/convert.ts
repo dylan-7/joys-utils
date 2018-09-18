@@ -1,6 +1,6 @@
 'use strict';
 
-import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject } from 'lodash/fp';
+import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size } from 'lodash/fp';
 
 /**
  * 转换金额/赔率
@@ -20,8 +20,9 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * convert({D: ['payout'], Multiple: 100}, {M: ['payout'], Multiple: 100}, {O: ['odds], Float: 3})
  */
 const convert = function(data: any = [], ...rest: any[]) {
-  const plainData = data;
-  const plainDataList = data.data;
+  const plainData = data
+  const dataField = find(v => has('Data', v), rest)['Data']
+  const plainDataList = !!size(dataField) ? data.data[dataField] : data.data
   const divideFields = find(v => has('D', v), rest)
   const multiplyFields = find(v => has('M', v), rest)
   const oddsFields = find(v => has('O', v), rest);
@@ -130,9 +131,13 @@ const convert = function(data: any = [], ...rest: any[]) {
     console.info(`🐞: `, e);
   }
 
-  const resultOK = plainDataList ? {...plainData, data: plainDataList } : {...plainData}
+  let dataOk = {...plainData, data: plainDataList };
+  if (!!size(dataField)) {
+    dataOk = {...plainData, data: {...data.data, [dataField]: plainDataList}}
+  }
+
+  const resultOK = plainDataList ? dataOk : {...plainData}
   return resultOK;
 }
-
 /** convert */
 export default convert;

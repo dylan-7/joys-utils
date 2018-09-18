@@ -7,7 +7,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject } from 'lodash/fp';
+import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size } from 'lodash/fp';
 /**
  * 转换金额/赔率
  *
@@ -31,8 +31,10 @@ var convert = function (data) {
     for (var _i = 1; _i < arguments.length; _i++) {
         rest[_i - 1] = arguments[_i];
     }
+    var _a;
     var plainData = data;
-    var plainDataList = data.data;
+    var dataField = find(function (v) { return has('Data', v); }, rest)['Data'];
+    var plainDataList = !!size(dataField) ? data.data[dataField] : data.data;
     var divideFields = find(function (v) { return has('D', v); }, rest);
     var multiplyFields = find(function (v) { return has('M', v); }, rest);
     var oddsFields = find(function (v) { return has('O', v); }, rest);
@@ -133,7 +135,11 @@ var convert = function (data) {
     catch (e) {
         console.info("\uD83D\uDC1E: ", e);
     }
-    var resultOK = plainDataList ? __assign({}, plainData, { data: plainDataList }) : __assign({}, plainData);
+    var dataOk = __assign({}, plainData, { data: plainDataList });
+    if (!!size(dataField)) {
+        dataOk = __assign({}, plainData, { data: __assign({}, data.data, (_a = {}, _a[dataField] = plainDataList, _a)) });
+    }
+    var resultOK = plainDataList ? dataOk : __assign({}, plainData);
     return resultOK;
 };
 /** convert */
