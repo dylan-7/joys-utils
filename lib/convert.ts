@@ -21,8 +21,8 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  */
 const convert = function(data: any = [], ...rest: any[]) {
   const plainData = data
-  const dataField = find(v => has('Data', v), rest)['Data']
-  const plainDataList = !!size(dataField) ? data.data[dataField] : data.data
+  const dataField = find(v => has('Data', v), rest) ? find(v => has('Data', v), rest)['Data'] : ''
+  const plainDataList = !!dataField ? data.data[dataField] : data.data
   const divideFields = find(v => has('D', v), rest)
   const multiplyFields = find(v => has('M', v), rest)
   const oddsFields = find(v => has('O', v), rest);

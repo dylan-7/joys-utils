@@ -33,8 +33,8 @@ var convert = function (data) {
     }
     var _a;
     var plainData = data;
-    var dataField = find(function (v) { return has('Data', v); }, rest)['Data'];
-    var plainDataList = !!size(dataField) ? data.data[dataField] : data.data;
+    var dataField = find(function (v) { return has('Data', v); }, rest) ? find(function (v) { return has('Data', v); }, rest)['Data'] : '';
+    var plainDataList = !!dataField ? data.data[dataField] : data.data;
     var divideFields = find(function (v) { return has('D', v); }, rest);
     var multiplyFields = find(function (v) { return has('M', v); }, rest);
     var oddsFields = find(function (v) { return has('O', v); }, rest);
