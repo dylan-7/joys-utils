@@ -1,5 +1,6 @@
 'use strict';
 import moment from 'moment-timezone';
+import { isNumber } from 'lodash/fp';
 /**
  * @desc
  * 返回开始/结束时间对象
@@ -34,29 +35,35 @@ var periodTime = function (_a) {
         };
     }
     var result = {};
-    switch (defaultTime) {
-        case 'today':
-            result[start] = timeZone().startOf('day').format(privateFormat) + startTime;
-            result[end] = timeZone().endOf('day').format(privateFormat) + endTime;
-            break;
-        case 'yesterday':
-            result[start] = timeZone().subtract(1, 'day').startOf('day').format(privateFormat) + startTime;
-            result[end] = timeZone().subtract(1, 'day').endOf('day').format(privateFormat) + endTime;
-            break;
-        case 'week':
-            result[start] = timeZone().startOf('week').format(privateFormat) + startTime;
-            result[end] = timeZone().endOf('week').format(privateFormat) + endTime;
-            break;
-        case 'month':
-            result[start] = timeZone().startOf('month').format(privateFormat) + startTime;
-            result[end] = timeZone().endOf('month').format(privateFormat) + endTime;
-            break;
-        case 'lastMonth':
-            result[start] = timeZone().subtract(1, 'month').startOf('month').format(privateFormat) + startTime;
-            result[end] = timeZone().subtract(1, 'month').endOf('month').format(privateFormat) + endTime;
-            break;
-        default:
-            return {};
+    if (isNumber(+defaultTime[0]) && defaultTime.endsWith('day')) {
+        result[start] = timeZone().subtract(parseInt(defaultTime, 10) - 1, 'day').startOf('day').format(privateFormat) + startTime;
+        result[end] = timeZone().endOf('day').format(privateFormat) + endTime;
+    }
+    else {
+        switch (defaultTime) {
+            case 'today':
+                result[start] = timeZone().startOf('day').format(privateFormat) + startTime;
+                result[end] = timeZone().endOf('day').format(privateFormat) + endTime;
+                break;
+            case 'yesterday':
+                result[start] = timeZone().subtract(1, 'day').startOf('day').format(privateFormat) + startTime;
+                result[end] = timeZone().subtract(1, 'day').endOf('day').format(privateFormat) + endTime;
+                break;
+            case 'week':
+                result[start] = timeZone().startOf('week').format(privateFormat) + startTime;
+                result[end] = timeZone().endOf('week').format(privateFormat) + endTime;
+                break;
+            case 'month':
+                result[start] = timeZone().startOf('month').format(privateFormat) + startTime;
+                result[end] = timeZone().endOf('month').format(privateFormat) + endTime;
+                break;
+            case 'lastMonth':
+                result[start] = timeZone().subtract(1, 'month').startOf('month').format(privateFormat) + startTime;
+                result[end] = timeZone().subtract(1, 'month').endOf('month').format(privateFormat) + endTime;
+                break;
+            default:
+                return {};
+        }
     }
     return result;
 };
