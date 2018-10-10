@@ -86,6 +86,7 @@ var convert = function (data) {
                 divider(v);
                 // 获取赔率
                 odder(v);
+                multiplier(v);
             }, plainDataList);
             // 列表 - 对象
         }
