@@ -61,8 +61,10 @@ function totalToData(result: any, ...rest ) {
         return {...result, data: [...result.data, ...pageRow, ...totalRow]};
       } else if (result.attributes.page_sum) {
         return {...result, data: [...result.data, ...pageRow]};
-      } else {
+      } else if (result.attributes.total_sum) {
         return {...result, data: [...result.data, ...totalRow]};
+      } else {
+        return {...result};
       }
     } catch (err) {
       console.info(`🐞: `, err);

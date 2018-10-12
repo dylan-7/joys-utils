@@ -76,8 +76,11 @@ function totalToData(result) {
             else if (result.attributes.page_sum) {
                 return __assign({}, result, { data: result.data.concat(pageRow_1) });
             }
-            else {
+            else if (result.attributes.total_sum) {
                 return __assign({}, result, { data: result.data.concat(totalRow_1) });
+            }
+            else {
+                return __assign({}, result);
             }
         }
         catch (err) {
