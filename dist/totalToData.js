@@ -46,7 +46,7 @@ function totalToData(result) {
             var pageSumAttr_1 = has('page_sum', result.attributes) ? result.attributes.page_sum : {};
             map(function (v) {
                 if (size(filter(function (field) { return eq(v, field); }, pageSum.pageSum))) {
-                    pageRow_1[v] = pageSumAttr_1[v] || '';
+                    pageRow_1[v] = has([v], pageSumAttr_1) ? pageSumAttr_1[v] : '';
                 }
                 else if (eq(pageSumTitle_1, v)) {
                     pageRow_1[v] = '小计';
@@ -61,7 +61,7 @@ function totalToData(result) {
             var totalSumAttr_1 = has('total_sum', result.attributes) ? result.attributes.total_sum : {};
             map(function (v) {
                 if (size(filter(function (field) { return eq(v, field); }, totalSum.totalSum))) {
-                    totalRow_1[v] = totalSumAttr_1[v] || '';
+                    totalRow_1[v] = has([v], totalSumAttr_1) ? totalSumAttr_1[v] : '';
                 }
                 else if (eq(totalSumTitle_1, v)) {
                     totalRow_1[v] = '总计';
@@ -70,7 +70,15 @@ function totalToData(result) {
                     totalRow_1[v] = '';
                 }
             }, keys(totalRow_1));
-            return __assign({}, result, { data: result.data.concat(pageRow_1, totalRow_1) });
+            if (result.attributes.page_sum && result.attributes.total_sum) {
+                return __assign({}, result, { data: result.data.concat(pageRow_1, totalRow_1) });
+            }
+            else if (result.attributes.page_sum) {
+                return __assign({}, result, { data: result.data.concat(pageRow_1) });
+            }
+            else {
+                return __assign({}, result, { data: result.data.concat(totalRow_1) });
+            }
         }
         catch (err) {
             console.info("\uD83D\uDC1E: ", err);

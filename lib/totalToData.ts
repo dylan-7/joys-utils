@@ -35,7 +35,7 @@ function totalToData(result: any, ...rest ) {
       const pageSumAttr = has('page_sum', result.attributes) ? result.attributes.page_sum : {};
       map(v => {
         if (size(filter(field => eq(v, field), pageSum.pageSum))) {
-          pageRow[v] = pageSumAttr[v] || '';
+          pageRow[v] = has([v], pageSumAttr) ? pageSumAttr[v] : '';
         } else if (eq(pageSumTitle, v)) {
           pageRow[v] = '小计';
         } else {
@@ -49,14 +49,21 @@ function totalToData(result: any, ...rest ) {
       const totalSumAttr = has('total_sum', result.attributes) ? result.attributes.total_sum : {};
       map(v => {
         if (size(filter(field => eq(v, field), totalSum.totalSum))) {
-          totalRow[v] = totalSumAttr[v] || '';
+          totalRow[v] = has([v], totalSumAttr) ? totalSumAttr[v] : '';
         } else if (eq(totalSumTitle, v)) {
           totalRow[v] = '总计';
         } else {
           totalRow[v] = '';
         }
       },  keys(totalRow));
-      return {...result, data: [...result.data, ...pageRow, ...totalRow]};
+
+      if (result.attributes.page_sum && result.attributes.total_sum) {
+        return {...result, data: [...result.data, ...pageRow, ...totalRow]};
+      } else if (result.attributes.page_sum) {
+        return {...result, data: [...result.data, ...pageRow]};
+      } else {
+        return {...result, data: [...result.data, ...totalRow]};
+      }
     } catch (err) {
       console.info(`🐞: `, err);
     }
@@ -64,5 +71,4 @@ function totalToData(result: any, ...rest ) {
     return result;
   }
 }
-
 export default totalToData;
