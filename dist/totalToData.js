@@ -46,7 +46,7 @@ function totalToData(result) {
             var pageSumAttr_1 = has('page_sum', result.attributes) ? result.attributes.page_sum : {};
             map(function (v) {
                 if (size(filter(function (field) { return eq(v, field); }, pageSum.pageSum))) {
-                    pageRow_1[v] = pageSumAttr_1[v];
+                    pageRow_1[v] = pageSumAttr_1[v] || '';
                 }
                 else if (eq(pageSumTitle_1, v)) {
                     pageRow_1[v] = '小计';
@@ -61,7 +61,7 @@ function totalToData(result) {
             var totalSumAttr_1 = has('total_sum', result.attributes) ? result.attributes.total_sum : {};
             map(function (v) {
                 if (size(filter(function (field) { return eq(v, field); }, totalSum.totalSum))) {
-                    totalRow_1[v] = totalSumAttr_1[v];
+                    totalRow_1[v] = totalSumAttr_1[v] || '';
                 }
                 else if (eq(totalSumTitle_1, v)) {
                     totalRow_1[v] = '总计';

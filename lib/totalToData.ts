@@ -35,7 +35,7 @@ function totalToData(result: any, ...rest ) {
       const pageSumAttr = has('page_sum', result.attributes) ? result.attributes.page_sum : {};
       map(v => {
         if (size(filter(field => eq(v, field), pageSum.pageSum))) {
-          pageRow[v] = pageSumAttr[v];
+          pageRow[v] = pageSumAttr[v] || '';
         } else if (eq(pageSumTitle, v)) {
           pageRow[v] = '小计';
         } else {
@@ -49,7 +49,7 @@ function totalToData(result: any, ...rest ) {
       const totalSumAttr = has('total_sum', result.attributes) ? result.attributes.total_sum : {};
       map(v => {
         if (size(filter(field => eq(v, field), totalSum.totalSum))) {
-          totalRow[v] = totalSumAttr[v];
+          totalRow[v] = totalSumAttr[v] || '';
         } else if (eq(totalSumTitle, v)) {
           totalRow[v] = '总计';
         } else {
