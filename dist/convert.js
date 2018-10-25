@@ -45,7 +45,7 @@ var convert = function (data) {
         ? __assign({}, divideFields, { Multiple: has('Multiple', divideFields) ? divideFields.Multiple : 100 }) : {};
     var multiply = multiplyFields && multiplyFields.M
         ? __assign({}, multiplyFields, { Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100 }) : {};
-    var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : 3 }) : {};
+    var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : 2 }) : {};
     // 乘
     // TODO: 提交为数组
     var multiplier = function (parent) {

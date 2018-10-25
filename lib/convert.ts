@@ -30,7 +30,7 @@ const convert = function(data: any = [], ...rest: any[]) {
     ? {...divideFields, Multiple: has('Multiple', divideFields) ? divideFields.Multiple : 100} : {}
   const multiply = multiplyFields && multiplyFields.M 
     ? {...multiplyFields, Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100} : {}
-  const odds = oddsFields && oddsFields.O ? {...oddsFields, Float: has('Float', oddsFields) ? oddsFields.Float : 3} : {}
+  const odds = oddsFields && oddsFields.O ? {...oddsFields, Float: has('Float', oddsFields) ? oddsFields.Float : 2} : {}
   
   // 乘
   // TODO: 提交为数组
