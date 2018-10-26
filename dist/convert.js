@@ -21,7 +21,7 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * dylan
  *
  * @description
- * 赔率保留小数点后 3 位
+ * 赔率保留小数点后 2 位
  * 获取金额除 100
  * 发送金额乘 100
  *
