@@ -2,7 +2,7 @@
  * 转换金额/赔率
  *
  * @version
- * v2.0.3
+ * v2.1.6
  *
  * @author
  * dylan
@@ -15,6 +15,11 @@
  * @example
  * convert({D: ['payout'], Multiple: 100}, {M: ['payout'], Multiple: 100}, {O: ['odds], Float: 3})
  */
+declare const Divide: number;
+declare const Multiple: number;
+declare const Odds: number;
 declare const convert: (data?: any, ...rest: any[]) => any;
 /** convert */
 export default convert;
+/** value */
+export { Divide, Multiple, Odds };

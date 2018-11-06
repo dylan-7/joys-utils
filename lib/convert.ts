@@ -6,7 +6,7 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * 转换金额/赔率
  * 
  * @version
- * v2.0.3
+ * v2.1.6
  * 
  * @author
  * dylan
@@ -19,6 +19,9 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * @example
  * convert({D: ['payout'], Multiple: 100}, {M: ['payout'], Multiple: 100}, {O: ['odds], Float: 3})
  */
+const Divide: number = 100;
+const Multiple: number = 100;
+const Odds: number = 2;
 const convert = function(data: any = [], ...rest: any[]) {
   const plainData = data
   const dataField = find(v => has('Data', v), rest) ? find(v => has('Data', v), rest)['Data'] : ''
@@ -27,10 +30,10 @@ const convert = function(data: any = [], ...rest: any[]) {
   const multiplyFields = find(v => has('M', v), rest)
   const oddsFields = find(v => has('O', v), rest);
   const divide = divideFields && divideFields.D 
-    ? {...divideFields, Multiple: has('Multiple', divideFields) ? divideFields.Multiple : 100} : {}
+    ? {...divideFields, Multiple: has('Multiple', divideFields) ? divideFields.Multiple : Divide} : {}
   const multiply = multiplyFields && multiplyFields.M 
-    ? {...multiplyFields, Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100} : {}
-  const odds = oddsFields && oddsFields.O ? {...oddsFields, Float: has('Float', oddsFields) ? oddsFields.Float : 2} : {}
+    ? {...multiplyFields, Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : Multiple} : {}
+  const odds = oddsFields && oddsFields.O ? {...oddsFields, Float: has('Float', oddsFields) ? oddsFields.Float : Odds} : {}
   
   // 乘
   // TODO: 提交为数组
@@ -142,3 +145,5 @@ const convert = function(data: any = [], ...rest: any[]) {
 }
 /** convert */
 export default convert;
+/** value */
+export {Divide, Multiple, Odds};

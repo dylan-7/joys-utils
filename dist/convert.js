@@ -15,7 +15,7 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * 转换金额/赔率
  *
  * @version
- * v2.0.3
+ * v2.1.6
  *
  * @author
  * dylan
@@ -28,6 +28,9 @@ import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPl
  * @example
  * convert({D: ['payout'], Multiple: 100}, {M: ['payout'], Multiple: 100}, {O: ['odds], Float: 3})
  */
+var Divide = 100;
+var Multiple = 100;
+var Odds = 2;
 var convert = function (data) {
     if (data === void 0) { data = []; }
     var rest = [];
@@ -42,10 +45,10 @@ var convert = function (data) {
     var multiplyFields = find(function (v) { return has('M', v); }, rest);
     var oddsFields = find(function (v) { return has('O', v); }, rest);
     var divide = divideFields && divideFields.D
-        ? __assign({}, divideFields, { Multiple: has('Multiple', divideFields) ? divideFields.Multiple : 100 }) : {};
+        ? __assign({}, divideFields, { Multiple: has('Multiple', divideFields) ? divideFields.Multiple : Divide }) : {};
     var multiply = multiplyFields && multiplyFields.M
-        ? __assign({}, multiplyFields, { Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : 100 }) : {};
-    var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : 2 }) : {};
+        ? __assign({}, multiplyFields, { Multiple: has('Multiple', multiplyFields) ? multiplyFields.Multiple : Multiple }) : {};
+    var odds = oddsFields && oddsFields.O ? __assign({}, oddsFields, { Float: has('Float', oddsFields) ? oddsFields.Float : Odds }) : {};
     // 乘
     // TODO: 提交为数组
     var multiplier = function (parent) {
@@ -148,3 +151,5 @@ var convert = function (data) {
 };
 /** convert */
 export default convert;
+/** value */
+export { Divide, Multiple, Odds };
