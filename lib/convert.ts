@@ -1,6 +1,6 @@
 'use strict';
 
-import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size } from 'lodash/fp';
+import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size, join, split } from 'lodash/fp';
 
 /**
  * 转换金额/赔率
@@ -64,8 +64,19 @@ const convert = function(data: any = [], ...rest: any[]) {
   // 赔率
   const odder = function(parent: object) {
     map((field: string) => {
-      if (parent[field] !== '') {
-        parent[field] = `${parent[field]}`.substring(0, (`${parent[field]}`.indexOf('.') + odds.Float) + 1)
+      const hasValue: boolean = parent[field] !== '';
+      const dot: number = `${parent[field]}`.indexOf('.')
+      if (hasValue && `${parent[field]}`.includes('/')) {
+        const items: string[] = split('/', `${parent[field]}`);
+        map(item => {
+          item = item.substring(0, item.indexOf('.') ? item.indexOf('.') + odds.Float + 1 : item)
+        },  items)
+        parent[field] = join('/', items)
+      } else if (hasValue && ~dot) {
+        parent[field] = `${parent[field]}`.substring(0, (dot + odds.Float) + 1)
+      } else {
+        parent[field] = parent[field]
+
       }
     },  odds.O)
   }
@@ -104,7 +115,7 @@ const convert = function(data: any = [], ...rest: any[]) {
     } else if (!isEmpty(plainData) && !isEmpty(odds)) {
       map((field: string) => {
         let current = plainData[field];
-        if (current) {
+        if (current && !current.includes('/')) {
           const dotIndex = `${current}`.indexOf('.')
           // 小数点部分
           const floatNumber = times(constant(0), odds.Float)
@@ -119,6 +130,21 @@ const convert = function(data: any = [], ...rest: any[]) {
     
           // 转数字类型小数点最后的 0 会被忽略
           plainData[field] = `${intNumber}.${floatNumber.join('')}`
+        } else if (current) {
+          const mulOdds: string[] = [];
+          map(item => {
+            const dotIndex = `${item}`.indexOf('.')
+            const floatNumber = times(constant(0), odds.Float)
+            let intNumber = item
+            if (~dotIndex) {
+              intNumber = `${item}`.substring(0, dotIndex)
+              Array.from(`${item}`.substring(dotIndex + 1)).map((v, i) => {
+                floatNumber[i] = +v
+              })
+            }
+            mulOdds.push(`${intNumber}.${floatNumber.join('')}`);
+          },  split('/', current));
+          plainData[field] = join('/', mulOdds);
         }
       },  odds.O)
     }

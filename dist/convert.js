@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size } from 'lodash/fp';
+import { has, isArray, map, find, keys, isEmpty, isObject, times, constant, isPlainObject, size, join, split } from 'lodash/fp';
 /**
  * 转换金额/赔率
  *
@@ -75,8 +75,20 @@ var convert = function (data) {
     // 赔率
     var odder = function (parent) {
         map(function (field) {
-            if (parent[field] !== '') {
-                parent[field] = ("" + parent[field]).substring(0, (("" + parent[field]).indexOf('.') + odds.Float) + 1);
+            var hasValue = parent[field] !== '';
+            var dot = ("" + parent[field]).indexOf('.');
+            if (hasValue && ("" + parent[field]).includes('/')) {
+                var items = split('/', "" + parent[field]);
+                map(function (item) {
+                    item = item.substring(0, item.indexOf('.') ? item.indexOf('.') + odds.Float + 1 : item);
+                }, items);
+                parent[field] = join('/', items);
+            }
+            else if (hasValue && ~dot) {
+                parent[field] = ("" + parent[field]).substring(0, (dot + odds.Float) + 1);
+            }
+            else {
+                parent[field] = parent[field];
             }
         }, odds.O);
     };
@@ -113,7 +125,7 @@ var convert = function (data) {
         else if (!isEmpty(plainData) && !isEmpty(odds)) {
             map(function (field) {
                 var current = plainData[field];
-                if (current) {
+                if (current && !current.includes('/')) {
                     var dotIndex = ("" + current).indexOf('.');
                     // 小数点部分
                     var floatNumber_1 = times(constant(0), odds.Float);
@@ -127,6 +139,22 @@ var convert = function (data) {
                     }
                     // 转数字类型小数点最后的 0 会被忽略
                     plainData[field] = intNumber + "." + floatNumber_1.join('');
+                }
+                else if (current) {
+                    var mulOdds_1 = [];
+                    map(function (item) {
+                        var dotIndex = ("" + item).indexOf('.');
+                        var floatNumber = times(constant(0), odds.Float);
+                        var intNumber = item;
+                        if (~dotIndex) {
+                            intNumber = ("" + item).substring(0, dotIndex);
+                            Array.from(("" + item).substring(dotIndex + 1)).map(function (v, i) {
+                                floatNumber[i] = +v;
+                            });
+                        }
+                        mulOdds_1.push(intNumber + "." + floatNumber.join(''));
+                    }, split('/', current));
+                    plainData[field] = join('/', mulOdds_1);
                 }
             }, odds.O);
         }
