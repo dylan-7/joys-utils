@@ -6,6 +6,6 @@
  * @example
  * toFixeder(0.235, 2) => 0.24
  */
-declare const toFixeder: (n: number, length: number) => string;
+declare const toFixeder: (n: number, length: number) => number;
 /** utils */
 export default toFixeder;
