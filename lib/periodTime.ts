@@ -22,7 +22,8 @@ const periodTime = ({
   start = 'start_date', end = 'end_date', format = 'YYYY-MM-DD', defaultTime = 'today', tz = 'est'
 }) => {
   moment.locale('zh');
-  
+
+  const timezone = tz === 'cct' ? 'beiJing' : 'est';
   let startTime = '';
   let endTime = '';
 
@@ -37,7 +38,7 @@ const periodTime = ({
     return moment().tz('America/Caracas');
   };
 
-  if (tz === 'beiJing') {
+  if (timezone === 'beiJing') {
     timeZone = function() {
       return moment();
     };
