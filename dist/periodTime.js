@@ -19,7 +19,7 @@ import { isNumber } from 'lodash/fp';
 var periodTime = function (_a) {
     var _b = _a.start, start = _b === void 0 ? 'start_date' : _b, _c = _a.end, end = _c === void 0 ? 'end_date' : _c, _d = _a.format, format = _d === void 0 ? 'YYYY-MM-DD' : _d, _e = _a.defaultTime, defaultTime = _e === void 0 ? 'today' : _e, _f = _a.tz, tz = _f === void 0 ? 'est' : _f;
     moment.locale('zh');
-    var timezone = tz === 'cct' ? 'beiJing' : 'est';
+    var timezone = tz === 'beiJing' ? 'beiJing' : 'est';
     var startTime = '';
     var endTime = '';
     if (/(HH|mm|ss)/.test(format)) {

@@ -23,7 +23,7 @@ const periodTime = ({
 }) => {
   moment.locale('zh');
 
-  const timezone = tz === 'cct' ? 'beiJing' : 'est';
+  const timezone = tz === 'beiJing' ? 'beiJing' : 'est';
   let startTime = '';
   let endTime = '';
 
