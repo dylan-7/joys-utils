@@ -68,6 +68,7 @@ function totalToData(result: any, ...rest ) {
       }
     } catch (err) {
       console.info(`🐞: `, err);
+      return result;
     }
   } else {
     return result;

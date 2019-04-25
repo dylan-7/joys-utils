@@ -85,6 +85,7 @@ function totalToData(result) {
         }
         catch (err) {
             console.info("\uD83D\uDC1E: ", err);
+            return result;
         }
     }
     else {
