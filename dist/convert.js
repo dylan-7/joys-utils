@@ -32,12 +32,12 @@ var Divide = 100;
 var Multiple = 100;
 var Odds = 2;
 var convert = function (data) {
+    var _a;
     if (data === void 0) { data = []; }
     var rest = [];
     for (var _i = 1; _i < arguments.length; _i++) {
         rest[_i - 1] = arguments[_i];
     }
-    var _a;
     var plainData = data;
     var dataField = find(function (v) { return has('Data', v); }, rest) ? find(function (v) { return has('Data', v); }, rest)['Data'] : '';
     var plainDataList = !!dataField ? data.data[dataField] : data.data;
