@@ -32,7 +32,7 @@ const periodTime = ({
     endTime = ' 23:59:59';
   }
   
-  const privateFormat = 'YYYY-MM-DD';
+  const privateFormat = format;
   
   let timeZone = function() {
     return moment().tz('America/Caracas');

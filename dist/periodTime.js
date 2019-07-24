@@ -26,7 +26,7 @@ var periodTime = function (_a) {
         startTime = ' 00:00:00';
         endTime = ' 23:59:59';
     }
-    var privateFormat = 'YYYY-MM-DD';
+    var privateFormat = format;
     var timeZone = function () {
         return moment().tz('America/Caracas');
     };
