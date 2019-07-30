@@ -14,12 +14,13 @@ import { isNumber } from 'lodash/fp';
  * format (string) 时间格式，默认 年-月-日
  * defaultTime (string) 默认时间，today | yesterday | week | month | lastMonth, 默认今日
  * tz: (string) 时区，est | beiJing，默认美东时区
+ * currentTime: (boolean) 当前时间
  * 
  * @example
  * periodTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
  */
 const periodTime = ({
-  start = 'start_date', end = 'end_date', format = 'YYYY-MM-DD', defaultTime = 'today', tz = 'est'
+  start = 'start_date', end = 'end_date', format = 'YYYY-MM-DD', defaultTime = 'today', tz = 'est', currentTime = false
 }) => {
   moment.locale('zh');
 
@@ -27,12 +28,11 @@ const periodTime = ({
   let startTime = '';
   let endTime = '';
 
-  if (/(HH|mm|ss)/.test(format)) {
+  if (/(HH|mm|ss)/.test(format) && !currentTime) {
     startTime = ' 00:00:00';
     endTime = ' 23:59:59';
   }
-  
-  const privateFormat = format;
+  const privateFormat = format.split(' ')[0];
   
   let timeZone = function() {
     return moment().tz('America/Caracas');

@@ -12,21 +12,22 @@ import { isNumber } from 'lodash/fp';
  * format (string) 时间格式，默认 年-月-日
  * defaultTime (string) 默认时间，today | yesterday | week | month | lastMonth, 默认今日
  * tz: (string) 时区，est | beiJing，默认美东时区
+ * currentTime: (boolean) 当前时间
  *
  * @example
  * periodTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
  */
 var periodTime = function (_a) {
-    var _b = _a.start, start = _b === void 0 ? 'start_date' : _b, _c = _a.end, end = _c === void 0 ? 'end_date' : _c, _d = _a.format, format = _d === void 0 ? 'YYYY-MM-DD' : _d, _e = _a.defaultTime, defaultTime = _e === void 0 ? 'today' : _e, _f = _a.tz, tz = _f === void 0 ? 'est' : _f;
+    var _b = _a.start, start = _b === void 0 ? 'start_date' : _b, _c = _a.end, end = _c === void 0 ? 'end_date' : _c, _d = _a.format, format = _d === void 0 ? 'YYYY-MM-DD' : _d, _e = _a.defaultTime, defaultTime = _e === void 0 ? 'today' : _e, _f = _a.tz, tz = _f === void 0 ? 'est' : _f, _g = _a.currentTime, currentTime = _g === void 0 ? false : _g;
     moment.locale('zh');
     var timezone = tz === 'beiJing' ? 'beiJing' : 'est';
     var startTime = '';
     var endTime = '';
-    if (/(HH|mm|ss)/.test(format)) {
+    if (/(HH|mm|ss)/.test(format) && !currentTime) {
         startTime = ' 00:00:00';
         endTime = ' 23:59:59';
     }
-    var privateFormat = format;
+    var privateFormat = format.split(' ')[0];
     var timeZone = function () {
         return moment().tz('America/Caracas');
     };

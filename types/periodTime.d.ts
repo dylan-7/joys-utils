@@ -9,16 +9,18 @@
  * format (string) 时间格式，默认 年-月-日
  * defaultTime (string) 默认时间，today | yesterday | week | month | lastMonth, 默认今日
  * tz: (string) 时区，est | beiJing，默认美东时区
+ * currentTime: (boolean) 当前时间
  *
  * @example
  * periodTime({start: 'start_time', end: 'end_time', format: 'YYYY-MM-DD HH:mm:ss', defaultTime: 'today'})
  */
-declare const periodTime: ({ start, end, format, defaultTime, tz }: {
+declare const periodTime: ({ start, end, format, defaultTime, tz, currentTime }: {
     start?: string;
     end?: string;
     format?: string;
     defaultTime?: string;
     tz?: string;
+    currentTime?: boolean;
 }) => {};
 /** periodTime */
 export default periodTime;
